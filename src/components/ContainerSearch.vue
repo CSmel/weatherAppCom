@@ -1,12 +1,7 @@
 <template>
   <div class="cell medium-6 large-4">
     <h5>Search For A Location</h5>
-    <input
-      type="search"
-      v-model="historyCity"
-      id="search-input"
-      placeholder="Start Searching..."
-    />
+    <input type="search" id="search-input" placeholder="Start Searching..."/>
     <form>
       <input class="fakeInput" v-model="tagSearch" type="text" />
       <div>Search History</div>
@@ -18,24 +13,20 @@
     <button @click="a++, b++" :disabled="b > this.namesLength - 1">
       <font-awesome-icon icon="arrow-circle-left" />
     </button>
+    {{ b }}
     <button @click="a--, b--" :disabled="a <= 1">
       <font-awesome-icon icon="arrow-circle-right" />
     </button>
-    {{ historyCity }}
-    <h1>Search History</h1>
-
     <div v-for="x in names.data.slice(b, a)" :key="x.id">
-      <input v-model="x.longitude" />
       <div class="history-overlay">
         <img :src="x.url_n" />
         <h2>
-          <span><button @click.prevent="longHistoryVal">Click Me</button></span>
+          <span
+          ><button @click.prevent="getLocalStorage">Click Me</button></span
+          >
         </h2>
       </div>
-      <br />
     </div>
-    <br />
-    -->
   </div>
 </template>
 <script>
@@ -45,7 +36,6 @@ export default {
     return {
       a: 1,
       b: 0,
-
       longitude: '',
       latitude: null,
       historyCity: '',
@@ -55,34 +45,27 @@ export default {
   },
   mounted () {
     // this.defaultObject();
+  console.log(this.names)
   },
 
   watch: {
-    cityDisplay: function () {}
+  cityDisplay: function () {
+  this.checkDuplicates()
+  }
   },
-
+updated() {
+},
   methods: {
-    longHistoryVal () {
-      for (let i = 0; i < this.names.data.length; i++) {
-        this.historyCity = this.names.data[this.b].city
-        console.log(this.historyCity)
-      }
-    }
+  checkDuplicates() {
+  }
   },
   computed: {},
   props: {
     search: Function,
     tagSearch: Function,
-    createNewObject: Function,
-    newImageHistory: Function,
-    viewPrevHistory: Function,
+  getLocalStorage: Function,
     cityDisplay: String,
-    stateDisplay: String,
-    imageHistory: Array,
     names: Object,
-    newHistoryObj: Object,
-    latNum: Number,
-    longNum: Number,
     namesLength: Number
   }
 }

@@ -4,19 +4,14 @@
       <button class="large button" @click="switchView">Click Me</button>
       <div class="grid-x grid-margin-x">
         <div class="cell medium-4">
+          <h2>{{ cityDisplay }}</h2>
           <ContainerSearch
-            :image-history="imageHistory"
-            :names="names"
-            :names-length="namesLength"
-            :lat-num="latNum"
-            :long-num="longNum"
-            :wait-aminute="waitAminute"
-            :create-new-object="createNewObject"
-            :new-image-history="newImageHistory"
-            :view-prev-history="viewPrevHistory"
-            :newHistoryObj="newHistoryObj"
-            :state-display="stateDisplay"
-            :city-display="cityDisplay"
+              :names="names"
+              :names-length="namesLength"
+              :c="c"
+              :getLocalStorage="getLocalStorage"
+              :search="search"
+              :city-display="cityDisplay"
           />
           <ContainerPopular v-if="!shown" />
         </div>
@@ -28,7 +23,6 @@
                 :currently="currently"
                 :cityDisplay="cityDisplay"
                 :stateDisplay="stateDisplay"
-                :images="images"
                 v-if="!shown"
               />
               <ContainerHourly :hourly="hourly" v-if="!shown" />
@@ -36,7 +30,6 @@
             <ContainerDaily :daily="daily" v-if="!shown" />
             <ContainerGraphs
               :newHumidityNumber="newHumidityNumber"
-              :currently="currently"
               :newPrecipValue="newPrecipValue"
               :newIndexValue="newIndexValue"
               :indexValue="indexValue"
@@ -88,6 +81,7 @@ export default {
     return {
       mode: false,
       shown: false,
+    c: 0,
       loading: '',
       newName: '',
       namesLength: 0,
@@ -106,12 +100,15 @@ export default {
       currently: {
         data: []
       },
+
+    searchArray: [],
       alerts: {},
       longNum: -82.5748,
       latNum: 27.4799,
 
       cityDisplay: 'Bradenton',
       stateDisplay: 'Florida',
+
       newIndexValue: 0,
       newHumidityNumber: 0,
       newPrecipValue: 0,
@@ -132,8 +129,15 @@ export default {
         this.newPrecipValue = this.currently.precipProbability * 100
         this.newIndexValue = this.currently.uvIndex * 10
         this.indexValue = this.currently.uvIndex
+      this.addSearch()
       })
+
     this.search()
+
+  console.log('App mounted!')
+  if (localStorage.getItem('searchArray')) {
+  this.searchArray = JSON.parse(localStorage.getItem('searchArray'))
+  }
   },
 
   updated: function () {
@@ -145,13 +149,66 @@ export default {
   watch: {
     cityDisplay: function () {
       this.search()
-    }
+    this.addSearch()
+    console.log(this.b)
+    },
+  searchArray: {
+  handler() {
+  // console.log('Search Array')
+  localStorage.setItem('searchArray', JSON.stringify(this.searchArray))
+  },
+  deep: true
+  }
   },
   methods: {
     switchView () {
       this.shown = !this.shown
     },
 
+  // add search history
+  addSearch() {
+  this.newObjCurrently = this.currently
+  this.newObDaily = this.daily
+  this.newObHourly = this.hourly
+  this.newObAlerts = this.alerts
+  this.newObHumidityNumber = this.newHumidityNumber
+  this.newObPrecipValue = this.newPrecipValue
+  this.newObIndexValue = this.newIndexValue
+
+  this.searchArray.push({
+  city: this.cityDisplay,
+  state: this.stateDisplay,
+  currently: this.newObjCurrently,
+  daily: this.newObDaily,
+  hourly: this.newObHourly,
+  alerts: this.newObAlerts,
+  humidity: this.newObHumidityNumber,
+  precip: this.newObPrecipValue,
+  index: this.newObIndexValue
+  })
+  },
+  getLocalStorage() {
+  this.cityDisplay = this.searchArray[0].city
+  this.stateDisplay = this.searchArray[0].state
+  this.currently = this.searchArray[0].currently
+  this.daily = this.searchArray[0].daily
+  this.hourly = this.searchArray[0].hourly
+  this.alerts = this.searchArray[0].alerts
+  this.newHumidityNumber = this.searchArray[0].humidity
+  this.newPrecipValue = this.searchArray[0].precip
+  this.newIndexValue = this.searchArray[0].index
+
+  // console.log(this.imageHistory)
+  this.checkDuplicates()
+  },
+
+  checkDuplicates() {
+  if (this.searchArray[this.c].city === this.names.data[this.c].city) {
+  this.searchArray.splice(this.c, 1)
+  this.names.data.splice(this.c, 1)
+  // alert('contains')
+  } else alert('nope')
+  },
     // flickr
     search () {
       this.loading = true
@@ -212,9 +269,8 @@ export default {
       this.ps.on('change', e => {
         this.latNum = e.result.latlng.lat
         this.longNum = e.result.latlng.lng
-        this.city = e.result.city
-        this.state = e.result.state
-        // this.longNumGlobal = e.result.latlng.lng;
+
+      // this.longNumGlobal = e.result.latlng.lng;
         axios
           .get(
             'https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/051b6680f036e325eecb49001964cdae/' +
@@ -232,28 +288,10 @@ export default {
             this.newIndexValue = this.currently.uvIndex * 10
 
             this.indexValue = this.currently.uvIndex
+          this.cityDisplay = e.result.city
+          this.stateDisplay = e.result.state
           })
-        this.cityDisplay = e.result.city
-        this.stateDisplay = e.result.state
       })
-    },
-    // History
-    viewPrevHistory () {
-      axios
-        .get(
-          'https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/051b6680f036e325eecb49001964cdae/27.496,-82.594'
-        )
-        .then(response => {
-          this.currently = response.data.currently
-          this.daily = response.data.daily
-          this.hourly = response.data.hourly
-          this.alerts = response.data.alerts
-          this.newHumidityNumber = this.currently.humidity * 100
-          this.newPrecipValue = this.currently.precipProbability * 100
-          this.newIndexValue = this.currently.uvIndex * 10
-
-          this.indexValue = this.currently.uvIndex
-        })
     }
   },
   computed: {
