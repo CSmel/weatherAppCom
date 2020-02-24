@@ -1,41 +1,77 @@
 <template>
   <div>
     <div class="cell small2">
-      <h5>Search For A Location</h5>
-      <div class="container-popular">
-        <div>
-          <img v-for="pic in popularPictures.slice(0, 1)" :src="pic.url" v-bind:key="pic.url" />
+      <div class="">
+        <div
+            class="container-popular"
+            v-for="(x, index) in savedHistoryArr"
+            :key="x.id"
+        >
+          <div>
+            <img :src="x.url_n"/>
+          </div>
+          <h2>
+            <span>
+              <font-awesome-icon
+                  @click.prevent="deleteSaveLocation(index)"
+                  icon="trash-alt"
+              /></span>
+            <!-- <span> <button @click.prevent="saveLocation">save</button></span>-->
+          </h2>
         </div>
       </div>
     </div>
+    <h2><span></span></h2>
+    <button @click.prevent="addSaveLocation">
+      <font-awesome-icon icon="plus-circle"/>
+    </button>
   </div>
 </template>
 <script>
-import _ from 'lodash'
 export default {
   name: 'containerPopular',
   data () {
     return {
-      popularPictures: [
-        { url: require('../assets/sanfrancisco.jpg') },
-        { url: require('../assets/miami.jpg') },
-        { url: require('../assets/seattle.jpg') }
-      ]
+    saveLink: ''
     }
   },
-  mounted: function () {
-    this.shufflePictures()
-  },
-  methods: {
-    shufflePictures () {
-      this.popularPictures = _.shuffle(this.popularPictures)
-    }
+mounted: function () {
+},
+methods: {},
+props: {
+savedHistoryArr: {
+type: Array,
+required: true
+},
+deleteSaveLocation: Function,
+addSaveLocation: Function
   }
 }
 </script>
 <style scoped>
 .container-popular {
-  border: 2px solid red;
-  height: 120px;
+  height: auto;
+  position: relative;
+}
+
+button {
+  height: 500px;
+}
+
+h2 {
+  position: absolute;
+  top: 110px;
+  left: 60px;
+  width: 100%;
+}
+
+h2 span {
+  padding: 5px 8px 5px 8px;
+  color: white;
+  font: bold 24px/45px Helvetica, Sans-Serif;
+  letter-spacing: -1px;
+  background: rgb(0, 0, 0); /* fallback color */
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 200px;
 }
 </style>
