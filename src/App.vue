@@ -1,19 +1,41 @@
 <template>
   <div id="app">
     <div class="grid-container fluid">
-      <button class="large button" @click="switchView">Click Me</button>
+      <button v-if="!shown" class="large button" @click="switchView">
+        Click Me
+      </button
+      >
+      <font-awesome-icon
+          v-if="shown"
+          @click="switchView"
+          icon="arrow-left"
+      />
+      {{ this.titleOfComponent }}
       <div class="grid-x grid-margin-x">
-        <div class="cell medium-4">
+        <div class="cell medium-3">
           <h2>{{ cityDisplay }}</h2>
-          <ContainerSearch
-              :names="names"
-              :names-length="namesLength"
-              :c="c"
-              :getLocalStorage="getLocalStorage"
-              :search="search"
-              :city-display="cityDisplay"
-          />
-          <ContainerPopular v-if="!shown" />
+          <div class="grid-x grid-margin-x">
+            <div class="cell">
+              <ContainerSearch
+                  :names="names"
+                  :names-length="namesLength"
+                  :c="c"
+                  :getLocalStorage="getLocalStorage"
+                  :search="search"
+                  :city-display="cityDisplay"
+              />
+            </div>
+            <div class="cell">
+              <ContainerPopular
+                  :currently="currently"
+                  :add-save-location="addSaveLocation"
+                  :delete-save-location="deleteSaveLocation"
+                  :saved-history-arr="savedHistoryArr"
+                  :new-saved-location-obj="newSavedLocationObj"
+                  v-if="!shown"
+              />
+            </div>
+          </div>
         </div>
         <div class="cell medium-6 large-8 ">
           <div class="grid-y grid-margin-y">
@@ -38,11 +60,13 @@
             <ContainerAlerts :alerts="alerts" v-if="!shown" />
             <div class="cell main-image-parent">
               <ContainerHourlyDetail
-                :hourly="hourly"
-                :cityDisplay="cityDisplay"
-                :state-display="stateDisplay"
-                :images="images"
-                v-if="shown"
+                  :hourly="hourly"
+                  :currently="currently"
+                  :daily="daily"
+                  :cityDisplay="cityDisplay"
+                  :state-display="stateDisplay"
+                  :images="images"
+                  v-if="shown"
               />
             </div>
           </div>
@@ -81,11 +105,15 @@ export default {
     return {
       mode: false,
       shown: false,
+    titleOfComponent: 'Home',
     c: 0,
       loading: '',
       newName: '',
+    newSavedLocationObj: '',
       namesLength: 0,
       newHistoryObj: {},
+    savedHistoryArr: [],
+
       names: {
         data: []
       },
@@ -161,8 +189,22 @@ export default {
   }
   },
   methods: {
+  // containerPopular
+  addSaveLocation() {
+  this.savedHistoryArr.push(this.newHistoryObj)
+  console.log(this.newHistoryObj)
+  return (this.newHistoryObj = '')
+  },
+  deleteSaveLocation(index) {
+  this.savedHistoryArr.splice(index, 1)
+  },
     switchView () {
       this.shown = !this.shown
+    if (this.shown) {
+    this.titleOfComponent = "Today's detailed forecast"
+    } else if (!this.shown) {
+    this.titleOfComponent = 'home'
+    }
     },
 
   // add search history
@@ -230,7 +272,9 @@ export default {
         longitude: self.longNum,
         latitude: self.latNum,
         city: self.cityDisplay,
-        state: self.stateDisplay
+      state: self.stateDisplay,
+      temp: self.currently.temperature,
+      icon: self.currently.icon
       })
     },
 

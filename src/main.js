@@ -11,7 +11,11 @@ import {
   faTemperatureHigh,
   faTint,
   faArrowCircleLeft,
-  faArrowCircleRight
+faArrowCircleRight,
+faArrowLeft,
+faHistory,
+faPlusCircle,
+faTrashAlt
 } from '@fortawesome/free-solid-svg-icons'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -24,7 +28,11 @@ library.add(
   faTemperatureHigh,
   faTint,
   faArrowCircleLeft,
-  faArrowCircleRight
+  faArrowCircleRight,
+  faArrowLeft,
+  faHistory,
+  faPlusCircle,
+  faTrashAlt
 )
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)

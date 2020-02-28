@@ -25,10 +25,10 @@
       ></progress-bar>
     </div>
     <div>
-      <h2>Popular Location</h2>
+      <!--<h2>Popular Location</h2>
       <div>
         <img v-for="pic in popularPictures.slice(0, 1)" :src="pic.url" v-bind:key="pic.url"/>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

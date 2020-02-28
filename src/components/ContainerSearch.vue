@@ -20,10 +20,10 @@
     <div v-for="x in names.data.slice(b, a)" :key="x.id">
       <div class="history-overlay">
         <img :src="x.url_n" />
+
         <h2>
           <span
-          ><button @click.prevent="getLocalStorage">Click Me</button></span
-          >
+          ><font-awesome-icon class="history-but" @click.prevent="getLocalStorage" icon="history"/></span>
         </h2>
       </div>
     </div>
@@ -73,13 +73,14 @@ updated() {
 <style scoped>
 .history-overlay {
   position: relative;
-  width: 100%; /* for IE 6 */
+  width: 50%; /* for IE 6 */
+  margin: auto;
 }
 
 h2 {
   position: absolute;
-  top: 200px;
-  left: 0;
+  top: 0;
+  left: 80px;
   width: 100%;
 }
 
