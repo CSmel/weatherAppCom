@@ -19,14 +19,15 @@
     "axios": "^0.19.1",
     "foundation-sites": "^6.6.1",
     "lodash": "^4.17.15",
+    "moment": "latest",
     "vue": "^2.5.2",
     "vue-axios": "^2.1.5",
+    "vue-js-modal": "github:csmel/vue-js-modal#master",
     "vue-lodash": "^2.1.1",
     "vue-moment": "^4.1.0",
     "vue-numeral-filter": "^1.1.1",
     "vue-skycons": "^1.0.4",
-    "vuejs-progress-bar": "^1.2.0",
-    "moment": "latest"
+    "vuejs-progress-bar": "^1.2.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

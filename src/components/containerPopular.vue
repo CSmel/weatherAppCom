@@ -26,8 +26,7 @@
         </div>
       </div>
     </div>
-
-    <button @click.prevent="addSaveLocation">
+    <button @click.prevent.once="addSaveLocation">
       <font-awesome-icon icon="plus-circle"/>
     </button>
   </div>

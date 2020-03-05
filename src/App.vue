@@ -1,16 +1,32 @@
 <template>
-  <div id="app">
+  <div id="app" class="modal-vue">
     <div class="grid-container fluid">
       <button v-if="!shown" class="large button" @click="switchView">
-        Click Me
-      </button
-      >
-      <font-awesome-icon
-          v-if="shown"
-          @click="switchView"
-          icon="arrow-left"
-      />
-      {{ this.titleOfComponent }}
+        {{ this.titleOfComponent }}
+      </button>
+      <!-- button show -->
+      <button class="large button" @click="showModal = true">
+        View Saved Locations
+      </button>
+      <!-- overlay -->
+      <div class="overlay" v-if="showModal" @click="showModal = false"></div>
+      <!-- modal -->
+      <div class="modal" v-if="showModal">
+        <button class="close" @click="showModal = false">
+          <font-awesome-icon icon="times"></font-awesome-icon>
+        </button>
+        <ContainerPopular
+            :currently="currently"
+            :add-save-location="addSaveLocation"
+            :delete-save-location="deleteSaveLocation"
+            :saved-history-arr="savedHistoryArr"
+            :new-saved-location-obj="newSavedLocationObj"
+        />
+      </div>
+      <button class="large button" v-if="shown" @click="switchView">
+        <font-awesome-icon icon="arrow-left"/>
+        {{ this.titleOfComponent }}
+      </button>
       <div class="grid-x grid-margin-x">
         <div class="cell medium-3">
           <h2>{{ cityDisplay }}</h2>
@@ -25,16 +41,7 @@
                   :city-display="cityDisplay"
               />
             </div>
-            <div class="cell">
-              <ContainerPopular
-                  :currently="currently"
-                  :add-save-location="addSaveLocation"
-                  :delete-save-location="deleteSaveLocation"
-                  :saved-history-arr="savedHistoryArr"
-                  :new-saved-location-obj="newSavedLocationObj"
-                  v-if="!shown"
-              />
-            </div>
+            <div class="cell"></div>
           </div>
         </div>
         <div class="cell medium-6 large-8 ">
@@ -78,7 +85,6 @@
 <script>
 import ContainerSearch from './components/ContainerSearch'
 import ContainerPopular from './components/ContainerPopular'
-
 import ContainerImage from './components/ContainerImage'
 import ContainerCurrently from './components/ContainerCurrently'
 import ContainerAlerts from './components/ContainerAlerts'
@@ -86,7 +92,17 @@ import ContainerDaily from './components/ContainerDaily'
 import ContainerGraphs from './components/ContainerGraphs'
 import ContainerHourly from './components/ContainerHourly'
 import ContainerHourlyDetail from './components/ContainerHourlyDetail'
+import {addSearch} from './js/methods/addSearch.js'
+import {addSaveLocation} from './js/methods/saveLocation/addSaveLocation'
+import {getLocalStorage} from './js/methods/saveLocation/getLocalStorage'
+import {deleteSaveLocation} from './js/methods/saveLocation/deleteSaveLocation'
 import axios from 'axios'
+import {checkDuplicates} from './js/methods/saveLocation/checkDuplicates'
+import {createNewObject} from './js/methods/createNewObject'
+import globalPlacesearch from './js/methods/placeSearch/globalPlacesearch'
+import search from './js/methods/flickr/search'
+import fetchImages from './js/methods/flickr/fetchImages'
+import {switchView} from './js/methods/switchView'
 
 export default {
   name: 'App',
@@ -103,6 +119,8 @@ export default {
   },
   data () {
     return {
+    keys: {},
+    showModal: false,
       mode: false,
       shown: false,
     titleOfComponent: 'Home',
@@ -162,7 +180,6 @@ export default {
 
     this.search()
 
-  console.log('App mounted!')
   if (localStorage.getItem('searchArray')) {
   this.searchArray = JSON.parse(localStorage.getItem('searchArray'))
   }
@@ -170,7 +187,7 @@ export default {
 
   updated: function () {
     this.$nextTick(function () {
-      this.waitAminute()
+    this.globalPlacesearch()
     })
   },
 
@@ -178,164 +195,32 @@ export default {
     cityDisplay: function () {
       this.search()
     this.addSearch()
-    console.log(this.b)
     },
   searchArray: {
   handler() {
-  // console.log('Search Array')
   localStorage.setItem('searchArray', JSON.stringify(this.searchArray))
   },
   deep: true
   }
   },
   methods: {
+  addSearch,
+  addSaveLocation,
+  getLocalStorage,
+  deleteSaveLocation,
+  checkDuplicates,
+  createNewObject,
+  globalPlacesearch,
+  search,
+  fetchImages,
+  switchView,
   // containerPopular
-  addSaveLocation() {
-  this.savedHistoryArr.push(this.newHistoryObj)
-  console.log(this.newHistoryObj)
-  return (this.newHistoryObj = '')
-  },
-  deleteSaveLocation(index) {
-  this.savedHistoryArr.splice(index, 1)
-  },
-    switchView () {
-      this.shown = !this.shown
-    if (this.shown) {
-    this.titleOfComponent = "Today's detailed forecast"
-    } else if (!this.shown) {
-    this.titleOfComponent = 'home'
-    }
-    },
-
-  // add search history
-  addSearch() {
-  this.newObjCurrently = this.currently
-  this.newObDaily = this.daily
-  this.newObHourly = this.hourly
-  this.newObAlerts = this.alerts
-  this.newObHumidityNumber = this.newHumidityNumber
-  this.newObPrecipValue = this.newPrecipValue
-  this.newObIndexValue = this.newIndexValue
-
-  this.searchArray.push({
-  city: this.cityDisplay,
-  state: this.stateDisplay,
-  currently: this.newObjCurrently,
-  daily: this.newObDaily,
-  hourly: this.newObHourly,
-  alerts: this.newObAlerts,
-  humidity: this.newObHumidityNumber,
-  precip: this.newObPrecipValue,
-  index: this.newObIndexValue
-  })
-  },
-  getLocalStorage() {
-  this.cityDisplay = this.searchArray[0].city
-  this.stateDisplay = this.searchArray[0].state
-  this.currently = this.searchArray[0].currently
-  this.daily = this.searchArray[0].daily
-  this.hourly = this.searchArray[0].hourly
-  this.alerts = this.searchArray[0].alerts
-  this.newHumidityNumber = this.searchArray[0].humidity
-  this.newPrecipValue = this.searchArray[0].precip
-  this.newIndexValue = this.searchArray[0].index
-
-  // console.log(this.imageHistory)
-  this.checkDuplicates()
-  },
-
-  checkDuplicates() {
-  if (this.searchArray[this.c].city === this.names.data[this.c].city) {
-  this.searchArray.splice(this.c, 1)
-  this.names.data.splice(this.c, 1)
-  // alert('contains')
-  } else alert('nope')
-  },
-    // flickr
-    search () {
-      this.loading = true
-      this.fetchImages().then(response => {
-        this.images = response.data.photos.photo
-        this.imageHistory = response.data.photos.photo
-        this.loading = false
-        this.createNewObject()
-        this.newImageHistory()
-      })
-    },
-    createNewObject () {
-      // create a new object from imageHistory array - original
-      const self = this
-
-      self.newHistoryObj = self.imageHistory
-
-      self.newHistoryObj = Object.assign({}, self.newHistoryObj[0], {
-        longitude: self.longNum,
-        latitude: self.latNum,
-        city: self.cityDisplay,
-      state: self.stateDisplay,
-      temp: self.currently.temperature,
-      icon: self.currently.icon
-      })
-    },
 
     newImageHistory () {
       this.namesLength = this.names.data.length
       this.names.data.push(this.newHistoryObj)
 
       return (this.newName = '')
-    },
-    fetchImages () {
-      return axios({
-        method: 'get',
-        url: 'https://api.flickr.com/services/rest',
-        params: {
-          method: 'flickr.photos.search',
-          api_key: '9e2afe6c0b729db22a911ea0aa55daaf',
-          text: this.tagSearch,
-          extras: 'url_n, owner_name, date_taken, views',
-          page: 1,
-          format: 'json',
-          nojsoncallback: 1,
-          per_page: 1,
-          sort: 'interestingness-desc'
-        }
-      })
-    },
-    /* global placeSearch */
-    /* eslint no-undef: "error" */
-    waitAminute: function () {
-      this.ps = placeSearch({
-        key: 'dlWrWcvQDTvdOpJqrIkkepoKexYGixQa',
-        container: document.querySelector('#search-input'),
-        useDeviceLocation: false,
-        collection: ['poi', 'address', 'adminArea']
-      })
-      this.ps.on('change', e => {
-        this.latNum = e.result.latlng.lat
-        this.longNum = e.result.latlng.lng
-
-      // this.longNumGlobal = e.result.latlng.lng;
-        axios
-          .get(
-            'https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/051b6680f036e325eecb49001964cdae/' +
-              this.latNum +
-              ',' +
-              this.longNum
-          )
-          .then(response => {
-            this.currently = response.data.currently
-            this.daily = response.data.daily
-            this.hourly = response.data.hourly
-            this.alerts = response.data.alerts
-            this.newHumidityNumber = this.currently.humidity * 100
-            this.newPrecipValue = this.currently.precipProbability * 100
-            this.newIndexValue = this.currently.uvIndex * 10
-
-            this.indexValue = this.currently.uvIndex
-          this.cityDisplay = e.result.city
-          this.stateDisplay = e.result.state
-          })
-      })
     }
   },
   computed: {
@@ -428,5 +313,32 @@ export default {
 
 img {
   display: inline !important;
+}
+
+.modal-vue .overlay {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-vue .modal {
+  position: absolute;
+  width: 600px;
+  top: 25%;
+  left: 30%;
+  z-index: 9999;
+  margin: 0 auto;
+  padding: 20px 30px;
+  background-color: #fff;
+}
+
+.modal-vue .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 </style>

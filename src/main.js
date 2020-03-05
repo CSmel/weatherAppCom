@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+import VModal from 'vue-js-modal'
 import ProgressBar from 'vuejs-progress-bar'
 import vueNumeralFilterInstaller from 'vue-numeral-filter'
 import VueSkycons from 'vue-skycons'
@@ -15,7 +16,8 @@ faArrowCircleRight,
 faArrowLeft,
 faHistory,
 faPlusCircle,
-faTrashAlt
+faTrashAlt,
+faTimes
 } from '@fortawesome/free-solid-svg-icons'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -32,7 +34,8 @@ library.add(
   faArrowLeft,
   faHistory,
   faPlusCircle,
-  faTrashAlt
+  faTrashAlt,
+  faTimes
 )
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
@@ -44,7 +47,7 @@ Vue.use(require('vue-moment'), { moment })
 
 Vue.use(VueSkycons, { color: 'lightblue' }, ProgressBar)
 Vue.config.productionTip = false
-
+Vue.use(VModal)
 /* eslint-disable */
 new Vue({
   el: "#app",

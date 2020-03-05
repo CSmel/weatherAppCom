@@ -23,7 +23,11 @@
 
         <h2>
           <span
-          ><font-awesome-icon class="history-but" @click.prevent="getLocalStorage" icon="history"/></span>
+          ><font-awesome-icon
+              class="history-but"
+              @click.prevent="getLocalStorage"
+              icon="history"
+          /></span>
         </h2>
       </div>
     </div>
@@ -45,7 +49,7 @@ export default {
   },
   mounted () {
     // this.defaultObject();
-  console.log(this.names)
+  //console.log(this.names)
   },
 
   watch: {
@@ -91,5 +95,6 @@ h2 span {
   background: rgb(0, 0, 0); /* fallback color */
   background: rgba(0, 0, 0, 0.7);
   padding: 10px;
+  border-radius: 100px;
 }
 </style>
