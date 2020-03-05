@@ -43,7 +43,7 @@ export default {
   return {}
   },
 props: {
-alerts: Object
+alerts: Array
   },
 mounted() {
 }
