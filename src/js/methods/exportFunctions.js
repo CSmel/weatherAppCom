@@ -1,7 +1,6 @@
 /* global placeSearch */
 /* eslint no-undef: "error" */
 
-
 import axios from 'axios'
 
 export function switchView() {
