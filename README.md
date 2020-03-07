@@ -6,6 +6,12 @@
 
 #### Dribbble Template
 > https://www.behance.net/gallery/81608819/Windows-London-Weather
+#### Flickr Api
+> https://www.flickr.com/services/api/flickr.photos.search.html
+#### Darksky Api
+> https://darksky.net/forecast/40.7127,-74.0059/us12/en
+#### Mapquest Place Search Api
+> https://developer.mapquest.com/documentation/place-search-js/v1.0/
 ``` bash
 # install dependencies
 npm install

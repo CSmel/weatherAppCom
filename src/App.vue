@@ -4,6 +4,10 @@
       <button v-if="!shown" class="large button" @click="switchView">
         {{ this.titleOfComponent }}
       </button>
+      <button class="large button" v-if="shown" @click="switchView">
+        <font-awesome-icon icon="arrow-left"/>
+        {{ this.titleOfComponent }}
+      </button>
       <!-- button show -->
       <button class="large button" @click="showModal = true">
         View Saved Locations
@@ -23,12 +27,9 @@
             :new-saved-location-obj="newSavedLocationObj"
         />
       </div>
-      <button class="large button" v-if="shown" @click="switchView">
-        <font-awesome-icon icon="arrow-left"/>
-        {{ this.titleOfComponent }}
-      </button>
+
       <div class="grid-x grid-margin-x">
-        <div class="cell medium-3">
+        <div class="cell medium-5 large-3">
           <h2>{{ cityDisplay }}</h2>
           <div class="grid-x grid-margin-x">
             <div class="cell">
@@ -44,7 +45,7 @@
             <div class="cell"></div>
           </div>
         </div>
-        <div class="cell medium-6 large-8 ">
+        <div class="cell medium-7 large-9 ">
           <div class="grid-y grid-margin-y">
             <div class="cell main-image-parent">
               <ContainerImage :images="images" v-if="!shown" />
@@ -92,17 +93,20 @@ import ContainerDaily from './components/ContainerDaily'
 import ContainerGraphs from './components/ContainerGraphs'
 import ContainerHourly from './components/ContainerHourly'
 import ContainerHourlyDetail from './components/ContainerHourlyDetail'
-import {addSearch} from './js/methods/addSearch.js'
-import {addSaveLocation} from './js/methods/saveLocation/addSaveLocation'
-import {getLocalStorage} from './js/methods/saveLocation/getLocalStorage'
-import {deleteSaveLocation} from './js/methods/saveLocation/deleteSaveLocation'
 import axios from 'axios'
-import {checkDuplicates} from './js/methods/saveLocation/checkDuplicates'
-import {createNewObject} from './js/methods/createNewObject'
-import globalPlacesearch from './js/methods/placeSearch/globalPlacesearch'
-import search from './js/methods/flickr/search'
-import fetchImages from './js/methods/flickr/fetchImages'
-import {switchView} from './js/methods/switchView'
+
+import {
+switchView,
+fetchImages,
+search,
+globalPlacesearch,
+addSaveLocation,
+checkDuplicates,
+deleteSaveLocation,
+getLocalStorage,
+addSearch,
+createNewObject
+} from './js/methods/exportFunctions.js'
 
 export default {
   name: 'App',
@@ -123,7 +127,7 @@ export default {
     showModal: false,
       mode: false,
       shown: false,
-    titleOfComponent: 'Home',
+    titleOfComponent: "Today's detailed forecast",
     c: 0,
       loading: '',
       newName: '',
@@ -208,8 +212,8 @@ export default {
   addSaveLocation,
   getLocalStorage,
   deleteSaveLocation,
-  checkDuplicates,
   createNewObject,
+  checkDuplicates,
   globalPlacesearch,
   search,
   fetchImages,
@@ -239,9 +243,6 @@ export default {
   background-color: #444444;
   color: #fff;
   min-height: 100vh;
-}
-
-.grid-x {
 }
 
 .fakeInput {
