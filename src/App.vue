@@ -37,6 +37,8 @@
                   :names="names"
                   :names-length="namesLength"
                   :c="c"
+                  :b="b"
+                  :check-duplicates="checkDuplicates"
                   :getLocalStorage="getLocalStorage"
                   :search="search"
                   :city-display="cityDisplay"
@@ -129,6 +131,7 @@ export default {
       shown: false,
     titleOfComponent: "Today's detailed forecast",
     c: 0,
+    b: 0,
       loading: '',
       newName: '',
     newSavedLocationObj: '',

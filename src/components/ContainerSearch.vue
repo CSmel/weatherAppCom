@@ -49,25 +49,24 @@ export default {
   },
   mounted () {
     // this.defaultObject();
-  //console.log(this.names)
+  // console.log(this.names)
   },
 
   watch: {
   cityDisplay: function () {
-  this.checkDuplicates()
   }
   },
 updated() {
 },
   methods: {
-  checkDuplicates() {
-  }
+
   },
   computed: {},
   props: {
     search: Function,
     tagSearch: Function,
   getLocalStorage: Function,
+  checkDuplicate: Function,
     cityDisplay: String,
     names: Object,
     namesLength: Number

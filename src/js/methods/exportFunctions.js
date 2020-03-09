@@ -72,9 +72,10 @@ this.savedHistoryArr.splice(index, 1)
 }
 
 export function checkDuplicates() {
-if (this.savedHistoryArr[this.c].city === this.names.data[this.c].city) {
-this.searchArray.splice(this.c, 1)
-this.names.data.splice(this.c, 1)
+this.index = this.searchArray.findIndex(x => x.city === 'Bradenton')
+if (this.searchArray[this.index].city === this.names.data[this.index].city) {
+this.searchArray.splice(0, 1)
+this.names.data.splice(0, 1)
 // alert('contains')
 } else alert('nope')
 }
